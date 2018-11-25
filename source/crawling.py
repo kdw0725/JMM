@@ -9,6 +9,7 @@ import os
 import sys
 from pyproj import Proj
 from pyproj import transform
+from selenium import webdriver
 
 
 def GPSfind(posx, posy):
@@ -124,7 +125,7 @@ def storeInfo():
 
 def find_info():
     location = input("현재 위치를 말씀해 주세요 : ")
-    search_url = 'https://place.map.daum.net/'+str(mapping_url)
+    search_url = 'https://place.map.daum.net/'+str(location)
     res = requests.get(search_url)
     res.raise_for_status()
     soup = BeautifulSoup(res.text, 'html.parser')
@@ -198,25 +199,28 @@ def matgip():
     else:
         print("Error Code:"+response)
 
-def daumSearch():
-    client_secret = "aa"
-    location = input("가게이름 : ")
-    url = 'https://openapi.daum.net/v1/search/local?query='+location
-
 def transGPS(x,y):
     WGS84 = {'proj': 'latlong', 'datum': 'WGS84', 'ellps': 'WGS84', }
     TM128 = {'proj': 'tmerc', 'lat_0': '38N', 'lon_0': '128E', 'ellps': 'bessel',
              'x_0': '400000', 'y_0': '600000', 'k': '0.9999',
              'towgs84': '-146.43,507.89,681.46'}
     (y,x) = ( transform(Proj(**TM128), Proj(**WGS84), x, y) )
-    print(x,y)
+    return x,y
 
+def googleSearch(x,y):
+    mapurl = 'https://www.google.co.kr/maps/search/%EC%9D%8C%EC%8B%9D%EC%A0%90/@'+str(x)+','+str(y)+',15z/data=!4m4!2m3!5m1!10e1!6e5'
 
+    driver = webdriver.Chrome()
+    driver.get(mapurl)
+    soup = BeautifulSoup(driver.page_source, 'html.parser')
+    name = soup.findAll("span", {"jstcache" : "130"})
+    for i in name:
+        print(i.text)
 
 if __name__ == '__main__':
     #userGPS()
-    transGPS(283420,551438)
-
+    (x,y) = transGPS(296354,543508)
+    googleSearch(x,y)
 
 
 

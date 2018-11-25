@@ -11,9 +11,7 @@ db = pymysql.connect(
 
 cursor = db.cursor()
 
-sql = "SELECT * FROM STORE"
-
-cursor.execute(sql)
+cursor.execute("SELECT * FROM STORE")
 
 data = cursor.fetchall()
 
