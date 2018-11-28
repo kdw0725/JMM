@@ -11,7 +11,7 @@ from pyproj import Proj
 from pyproj import transform
 from selenium import webdriver
 
-
+'''
 def GPSfind(posx, posy):
     dic1 = {}
     dic2 = {}
@@ -45,7 +45,7 @@ def GPSfind(posx, posy):
     print(dic2)
     print(dic3)
     print(dic4)
-
+'''
 def research(title):
     client_id = "fechS4lsKMLVwarW0I01"
     client_secret = "MxwdD119Rv"
@@ -208,10 +208,12 @@ def transGPS(x,y):
     return x,y
 
 def googleSearch(x,y):
-    mapurl = 'https://www.google.co.kr/maps/search/%EC%9D%8C%EC%8B%9D%EC%A0%90/@'+str(x)+','+str(y)+',15z/data=!4m4!2m3!5m1!10e1!6e5'
-
+    mapurl = 'http://map.daum.net'
+    print(mapurl)
     driver = webdriver.Chrome()
     driver.get(mapurl)
+    driver.create_options()
+
     soup = BeautifulSoup(driver.page_source, 'html.parser')
     name = soup.findAll("span", {"jstcache" : "130"})
     for i in name:
@@ -220,8 +222,8 @@ def googleSearch(x,y):
 if __name__ == '__main__':
     #userGPS()
     (x,y) = transGPS(296354,543508)
+    print(x,y)
     googleSearch(x,y)
-
 
 
     'https://github.com/s-owl/skhufeeds/blob/master/skhufeeds/crawlers/crawlers/menu.py'

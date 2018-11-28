@@ -2,6 +2,9 @@ import os
 from source import crawling
 from flask import Flask, request, jsonify
 #from test import microdust_1
+from source import insert
+from source import choice
+
 
 
 app = Flask(__name__)
@@ -24,6 +27,20 @@ def Message():
             "message":{
                 "text" : "지역과 음식 종류를 입력해 주세요 ex) 오류동 짜장면 " #"점머먹 명령어 목록 \n1. 도움말\n2. 안녕\n3.저기"
             }
+        }
+    elif content =='choice':
+        dataSend = {
+            "message":{
+                "text":choice.choice_preference()
+            }
+
+        }
+    elif content =='insert':
+        dataSend={
+            "message":{
+                "text":insert.choice_insert()
+            }
+
         }
     else:
         dataSend = {
@@ -60,4 +77,4 @@ def Message():
     return jsonify(dataSend)
 
 if __name__ == "__main__":
-    app.run()
+    app.run(host='0.0.0.0', port=5000)
