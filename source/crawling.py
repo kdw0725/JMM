@@ -7,6 +7,7 @@ import re
 import math
 import os
 import sys
+import time
 from pyproj import Proj
 from pyproj import transform
 from selenium import webdriver
@@ -208,20 +209,29 @@ def transGPS(x,y):
     return x,y
 
 def googleSearch(x,y):
-    mapurl = 'http://map.daum.net'
-    print(mapurl)
+    mapurl1 = 'https://www.google.co.kr/maps/search/%EC%9D%8C%EC%8B%9D%EC%A0%90/@'+str(x)+','+ str(y)+',17.75z/data=!4m4!2m3!5m1!10e2!6e5'
+    print(mapurl1)
     driver = webdriver.Chrome()
-    driver.get(mapurl)
-    driver.create_options()
-
-    soup = BeautifulSoup(driver.page_source, 'html.parser')
-    name = soup.findAll("span", {"jstcache" : "130"})
-    for i in name:
-        print(i.text)
+    driver.get(mapurl1)
+    for tickbox in driver.find_elements_by_css_selector("input#section-query-on-pan-checkbox-id"):
+        try:
+            driver.set_window_size(1920,1080)
+            tickbox.click()
+            #driver.refresh()
+            time.sleep(2)
+            html = driver.page_source
+            soup = BeautifulSoup(html, 'html.parser')
+            #print(soup)
+            name = soup.findAll("span", {"jstcache": "143"})
+            for i in name:
+                print(i.text)
+            driver.close()
+        except:
+            None
 
 if __name__ == '__main__':
-    #userGPS()
-    (x,y) = transGPS(296354,543508)
+    (a,b) = userGPS()
+    (x,y) = transGPS(a,b)
     print(x,y)
     googleSearch(x,y)
 
