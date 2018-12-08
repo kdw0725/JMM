@@ -11,7 +11,7 @@ import time
 from pyproj import Proj
 from pyproj import transform
 from selenium import webdriver
-
+from pyvirtualdisplay import Display
 '''
 def GPSfind(posx, posy):
     dic1 = {}
@@ -209,16 +209,24 @@ def transGPS(x,y):
     return x,y
 
 def googleSearch(x,y):
-    mapurl1 = 'https://www.google.co.kr/maps/search/%EC%9D%8C%EC%8B%9D%EC%A0%90/@'+str(x)+','+ str(y)+',17.75z/data=!4m4!2m3!5m1!10e2!6e5'
+    mapurl1 = 'https://www.google.co.kr/maps/search/%EC%9D%8C%EC%8B%9D%EC%A0%90/@'+str(x)+','+ str(y)+',18z/data=!4m4!2m3!5m1!10e2!6e5'
     print(mapurl1)
+    '''options = webdriver.FirefoxOptions
+    options.add_argument('--disable-extensions')
+    options.add_argument('--headless')
+    options.add_argument('--disable-gpu')
+    options.add_argument('--no-sandbox')'''
+
+    #driver = webdriver.Chrome(options=options)
     driver = webdriver.Chrome()
     driver.get(mapurl1)
+
     for tickbox in driver.find_elements_by_css_selector("input#section-query-on-pan-checkbox-id"):
         try:
             driver.set_window_size(1920,1080)
             tickbox.click()
             #driver.refresh()
-            time.sleep(2)
+            time.sleep(3)
             html = driver.page_source
             soup = BeautifulSoup(html, 'html.parser')
             #print(soup)
@@ -229,11 +237,12 @@ def googleSearch(x,y):
         except:
             None
 
+
 if __name__ == '__main__':
     (a,b) = userGPS()
     (x,y) = transGPS(a,b)
     print(x,y)
-    googleSearch(x,y)
+    googleSearch(str(x)[0:10],str(y)[0:10])
 
 
     'https://github.com/s-owl/skhufeeds/blob/master/skhufeeds/crawlers/crawlers/menu.py'
