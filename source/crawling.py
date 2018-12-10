@@ -90,10 +90,9 @@ def userGPS():
         print("Error Code:" + response)
 
 
-def storeInfo():
+def storeInfo(location):
     client_id = "fechS4lsKMLVwarW0I01"
     client_secret = "MxwdD119Rv"
-    location = input("가게 이름 : ")
     encText = urllib.parse.quote(location)
 
     store_url = 'https://openapi.naver.com/v1/search/local?query='+encText
@@ -251,6 +250,7 @@ if __name__ == '__main__':
     (x, y) = transGPS(a, b)
     print(x, y)
     googleSearch(str(x)[0:10], str(y)[0:10])
+
     '''
     storeInfo()
 '''
