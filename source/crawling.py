@@ -11,7 +11,7 @@ import time
 from pyproj import Proj
 from pyproj import transform
 from selenium import webdriver
-from pyvirtualdisplay import Display
+from collections import OrderedDict
 '''
 def GPSfind(posx, posy):
     dic1 = {}
@@ -110,16 +110,23 @@ def storeInfo():
         json_data = json.loads(locinfo)
         item = json_data.get('items')
 
-        for j in range(10):
-            s_title = item[j].get('title')
+        file_data = OrderedDict()
+
+        for j in range(len(item)):
+            title = item[j].get('title')
+            s_title = re.sub('<.+?>','',title,0,re.I | re.S)
             s_telephone = item[j].get('telephone')
             s_address = item[j].get('address')
             s_roadAddress = item[j].get('roadAddress')
             s_mapx = item[j].get('mapx')
             s_mapy = item[j].get('mapy')
-            store_information = [s_title, s_telephone, s_address, s_roadAddress, s_mapy, s_mapx]
+            (a,b) = transGPS(s_mapx,s_mapy)
+            store_information = [s_title, s_telephone, s_address, s_roadAddress, a,b]
             for i in store_information:
-                print(i)
+                if(i==""):
+                    print('NULL')
+                else:
+                    print(i)
             print(sep='\n')
     else:
         print("Error Code:"+response)
@@ -209,16 +216,16 @@ def transGPS(x,y):
     return x,y
 
 def googleSearch(x,y):
+#    mapurl1 = 'https://www.google.co.kr/maps/search/%EC%9D%8C%EC%8B%9D%EC%A0%90/@'+str(x)+','+ str(y)+',20z/data=!4m4!2m3!5m1!10e2!6e5'
     mapurl1 = 'https://www.google.co.kr/maps/search/%EC%9D%8C%EC%8B%9D%EC%A0%90/@'+str(x)+','+ str(y)+',18z/data=!4m4!2m3!5m1!10e2!6e5'
     print(mapurl1)
-    '''options = webdriver.FirefoxOptions
+    options = webdriver.ChromeOptions()
     options.add_argument('--disable-extensions')
     options.add_argument('--headless')
     options.add_argument('--disable-gpu')
-    options.add_argument('--no-sandbox')'''
+    options.add_argument('--no-sandbox')
 
-    #driver = webdriver.Chrome(options=options)
-    driver = webdriver.Chrome()
+    driver = webdriver.Chrome(options=options)
     driver.get(mapurl1)
 
     for tickbox in driver.find_elements_by_css_selector("input#section-query-on-pan-checkbox-id"):
@@ -226,7 +233,7 @@ def googleSearch(x,y):
             driver.set_window_size(1920,1080)
             tickbox.click()
             #driver.refresh()
-            time.sleep(3)
+            time.sleep(5)
             html = driver.page_source
             soup = BeautifulSoup(html, 'html.parser')
             #print(soup)
@@ -239,10 +246,13 @@ def googleSearch(x,y):
 
 
 if __name__ == '__main__':
-    (a,b) = userGPS()
-    (x,y) = transGPS(a,b)
-    print(x,y)
-    googleSearch(str(x)[0:10],str(y)[0:10])
 
-
+    (a, b) = userGPS()
+    (x, y) = transGPS(a, b)
+    print(x, y)
+    googleSearch(str(x)[0:10], str(y)[0:10])
+    '''
+    storeInfo()
+'''
     'https://github.com/s-owl/skhufeeds/blob/master/skhufeeds/crawlers/crawlers/menu.py'
+
